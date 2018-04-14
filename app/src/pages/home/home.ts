@@ -1,6 +1,7 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import {Component, ViewChild, ElementRef} from '@angular/core';
+import {NavController} from 'ionic-angular';
 import {Geolocation, Geoposition} from '@ionic-native/geolocation';
+import {KulturarvService} from "../../services/kulturarv.service";
 
 declare var google;
 
@@ -13,15 +14,16 @@ export class HomePage {
   @ViewChild('map') mapElement: ElementRef;
   map: any;
 
-  constructor(public navCtrl: NavController, public geolocation: Geolocation) {
+  constructor(public navCtrl: NavController, public geolocation: Geolocation, private kulturarvService: KulturarvService) {
+    this.kulturarvService.getKulturarv();
   }
 
-  ionViewDidLoad(){
+  ionViewDidLoad() {
     this.loadMap();
   }
 
 
-  loadMap(){
+  loadMap() {
 
     this.geolocation.getCurrentPosition().then((position) => {
       let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -41,7 +43,7 @@ export class HomePage {
 
   }
 
-  addMarker(position: Geoposition){
+  addMarker(position: Geoposition) {
 
     let marker = new google.maps.Marker({
       map: this.map,
@@ -53,6 +55,6 @@ export class HomePage {
       console.log('Clicked ' + position.coords);
     });
 
-  }
 
+  }
 }
