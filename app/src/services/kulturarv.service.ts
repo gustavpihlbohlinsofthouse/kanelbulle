@@ -22,7 +22,6 @@ export class KulturarvService {
 
       this.kulturarv$.next(this.transformKulturarv(response));
 
-
     }, (error2) => {
       console.log(error2);
     });
