@@ -10,16 +10,19 @@ declare var google;
 })
 export class HomePage {
 
+  public geoError: boolean;
+
   @ViewChild('map') mapElement: ElementRef;
   map: any;
 
   constructor(public navCtrl: NavController, public geolocation: Geolocation) {
-
+    this.geoError = false;
   }
 
   ionViewDidLoad(){
     this.loadMap();
   }
+
 
   loadMap(){
 
@@ -30,12 +33,13 @@ export class HomePage {
         center: latLng,
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP
-      }
+      };
 
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
       this.addMarker(position);
     }, (error) => {
+      this.geoError = true;
       console.log(error);
     });
 
@@ -47,6 +51,10 @@ export class HomePage {
       map: this.map,
       animation: google.maps.Animation.DROP,
       position: new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+    });
+
+    google.maps.event.addListener(marker, 'click', () => {
+      console.log('Clicked ' + position.coords);
     });
 
   }
