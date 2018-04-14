@@ -10,13 +10,10 @@ declare var google;
 })
 export class HomePage {
 
-  public geoError: boolean;
-
   @ViewChild('map') mapElement: ElementRef;
   map: any;
 
   constructor(public navCtrl: NavController, public geolocation: Geolocation) {
-    this.geoError = false;
   }
 
   ionViewDidLoad(){
@@ -39,7 +36,6 @@ export class HomePage {
 
       this.addMarker(position);
     }, (error) => {
-      this.geoError = true;
       console.log(error);
     });
 
