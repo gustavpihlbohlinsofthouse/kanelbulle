@@ -13,6 +13,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {HttpClientModule} from "@angular/common/http";
 import {KulturarvService} from "../services/kulturarv.service";
+import {DetailsPage} from "../pages/details/details";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {KulturarvService} from "../services/kulturarv.service";
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    DetailsPage
   ],
   imports: [
     BrowserModule,
@@ -33,7 +35,8 @@ import {KulturarvService} from "../services/kulturarv.service";
     AboutPage,
     ContactPage,
     HomePage,
-    TabsPage
+    TabsPage,
+    DetailsPage
   ],
   providers: [
     StatusBar,
