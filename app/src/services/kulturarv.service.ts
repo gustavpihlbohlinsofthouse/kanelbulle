@@ -9,7 +9,7 @@ export class KulturarvService {
   //
   private url = "http://kulturarvsdata.se/ksamsok/api?method=search&x-api=test&query=";
   private query = "geoDataExists=j and thumbnailExists=j and boundingBox=/WGS84+%2215.230827 55.981696 16.070531 56.308472%22";
-  private filters = "&recordSchema=presentation";
+  private filters = "&recordSchema=presentation&hitsPerPage=500";
 
   //&recordSchema=xml&fields=thumbnail,itemLabel,lon,lat,itemDescription
 
