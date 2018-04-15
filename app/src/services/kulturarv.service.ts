@@ -6,9 +6,9 @@ import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class KulturarvService {
-  //boundingBox=/WGS84+%2215.588544384554211 56.17562894058903 15.609959141329114 56.19716749533957%22
+  //
   private url = "http://kulturarvsdata.se/ksamsok/api?method=search&x-api=test&query=";
-  private query = "geoDataExists=j and thumbnailExists=j";
+  private query = "geoDataExists=j and thumbnailExists=j and boundingBox=/WGS84+%2215.230827 55.981696 16.070531 56.308472%22";
   private filters = "&recordSchema=presentation";
 
   //&recordSchema=xml&fields=thumbnail,itemLabel,lon,lat,itemDescription
