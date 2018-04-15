@@ -3,8 +3,9 @@ export class Kulturarv {
   description: string;
   coordinate: Coordinate;
   imageUrl: string;
+  thumbnailURL: string;
 
-  constructor(title: string, description: string, coordinate: string, imageUrl: string) {
+  constructor(title: string, description: string, coordinate: string, imageUrl: string, thumbnailUrl: string) {
     this.title = title;
     this.description = description;
 
@@ -14,7 +15,7 @@ export class Kulturarv {
     this.coordinate = new Coordinate(latitude, longitude);
 
     this.imageUrl = imageUrl;
-
+    this.thumbnailURL = thumbnailUrl;
   }
 }
 

@@ -7,18 +7,27 @@ import {Observable} from "rxjs/Observable";
 @Injectable()
 export class KulturarvService {
   //boundingBox=/WGS84+%2215.588544384554211 56.17562894058903 15.609959141329114 56.19716749533957%22
-  private url = "http://kulturarvsdata.se/ksamsok/api?method=search&x-api=test&query=geoDataExists=%22j%22+and+serviceName=%22bbrb%22+and+create_toTime>=1700+and+create_fromTime<=1799+and+thumbnailExists=j";
+  private url = "http://kulturarvsdata.se/ksamsok/api?method=search&x-api=test&query=";
+  private query = "geoDataExists=j and thumbnailExists=j";
+  private filters = "&recordSchema=presentation";
+
+  //&recordSchema=xml&fields=thumbnail,itemLabel,lon,lat,itemDescription
 
   private domParser = new DOMParser();
 
   private readonly kulturarv$: BehaviorSubject<Kulturarv[]> = new BehaviorSubject([]);
+
+
 
   constructor(private http: HttpClient) {
 
   }
 
   getKulturarv() {
-    return this.http.get(this.url).subscribe((response: any) => {
+    return this.http.get(this.url+this.query+this.filters, {
+      headers: {'Accept':'application/xml'},
+      responseType: 'text'
+    }).subscribe((response: any) => {
 
       this.kulturarv$.next(this.transformKulturarv(response));
 
@@ -28,32 +37,23 @@ export class KulturarvService {
   }
 
   private transformKulturarv(response: any) {
-    return response.result.records.map(record => {
-      console.log(record);
-      //console.log(record.record['@graph'].find(x => x['@type'] == 'ns5:Context'));
-      //record['@graph'].find(x => x['@type'] == 'ns5:Context')['ns5:coordinates']['@value'];
+    let parsed = this.domParser.parseFromString(response, "application/xml");
+    let records = Array.from(parsed.getElementsByTagName('result')[0].getElementsByTagName('records')[0].getElementsByTagName('record'));
 
-      let graph = record.record['@graph'];
+    return records.map(record => {
+      let label = record.getElementsByTagName('pres:itemLabel')[0].innerHTML;
+      let description = Array.from(record.getElementsByTagName('pres:description')).map(description => description.innerHTML).pop() || "";
+      let imageSources = Array.from(record.getElementsByTagName('pres:image')[0].getElementsByTagName('pres:src'));
+      let thumbnail = imageSources.find(src => src.getAttribute('type') == 'thumbnail').innerHTML;
+      let lowres = imageSources.find(src => src.getAttribute('type') == 'lowres').innerHTML;
 
-      let imageUrl = graph.find(x => x['@type'] == 'ns5:Image')['ns5:lowresSource'];
+      let coordinate = record.getElementsByTagName('georss:where')[0]
+        .getElementsByTagName('gml:Point')[0]
+        .getElementsByTagName('gml:coordinates')[0].innerHTML;
 
-      let context = graph.find(x => x['@type'] == 'ns5:Context' && x['ns5:coordinates'] != undefined);
-      if(context) {
-        let coordinateXml = context['ns5:coordinates'];
-        let coordinateXmlValue = coordinateXml['@value'];
-        let coordinate: string = this.domParser.parseFromString(coordinateXmlValue, "application/xml").childNodes[0].childNodes[0]['innerHTML'];
-
-        let entity = graph.find(x => x['@type'] == 'ns5:Entity' && x['ns5:itemLabel'] != undefined);
-        if(entity) {
-          let label = entity['ns5:itemLabel'];
-
-          let historik = graph.find(x => x['ns5:type'] == 'Historik' && x['ns5:desc'] != undefined);
-          if(historik) {
-            return new Kulturarv(label, historik['ns5:desc'], coordinate, imageUrl);
-          }
-        }
-      }
-    }).filter(x => x != undefined);
+      let kulturarv = new Kulturarv(label, description, coordinate, lowres, thumbnail);
+      return kulturarv;
+    });
   }
 
   get kulturarv(): Observable<Kulturarv[]> {

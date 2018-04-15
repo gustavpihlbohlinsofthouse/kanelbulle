@@ -54,10 +54,8 @@ export class HomePage {
   }
 
   addMarker(kulturarv: Kulturarv) {
-    console.log('adding marker');
-
     let infoWindow = new google.maps.InfoWindow({
-      content: '<h1>' + kulturarv.title + '</h1><p>' + kulturarv.description + '</p><img src="' + kulturarv.imageUrl + '"/>'
+      content: '<h1>' + kulturarv.title + '</h1><p>' + kulturarv.description + '</p><img src="' + kulturarv.thumbnailURL + '"/>'
     });
 
     let marker = new google.maps.Marker({
