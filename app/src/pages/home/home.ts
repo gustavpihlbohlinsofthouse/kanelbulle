@@ -1,10 +1,10 @@
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {NavController} from 'ionic-angular';
-import {Geolocation, Geoposition} from '@ionic-native/geolocation';
+import {Geolocation} from '@ionic-native/geolocation';
 import {KulturarvService} from "../../services/kulturarv.service";
 import {Observable} from "rxjs/Observable";
-import {Coordinate, Kulturarv} from '../../services/entities/kulturarv';
-import {Observer} from "rxjs/Observer";
+import {Kulturarv} from '../../services/entities/kulturarv';
+import {DetailsPage} from "../details/details";
 
 declare var google;
 
@@ -25,18 +25,19 @@ export class HomePage {
 
   ionViewDidLoad() {
     this.kulturarvService.getKulturarv();
-    this.loadMap();
-    this.kulturarv$.forEach(arv => {
-      arv.forEach(a => {
-        this.addMarker(a);
+    this.loadMap().then(() => {
+      this.kulturarv$.forEach(arv => {
+        arv.forEach(a => {
+          this.addMarker(a);
+        });
       })
-    })
+    });
   }
 
 
   loadMap() {
 
-    this.geolocation.getCurrentPosition().then((position) => {
+    return this.geolocation.getCurrentPosition().then((position) => {
       let latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
       let mapOptions = {
@@ -54,9 +55,9 @@ export class HomePage {
   }
 
   addMarker(kulturarv: Kulturarv) {
-    let infoWindow = new google.maps.InfoWindow({
+    /*new google.maps.InfoWindow({
       content: '<h1>' + kulturarv.title + '</h1><p>' + kulturarv.description + '</p><img src="' + kulturarv.thumbnailURL + '"/>'
-    });
+    });*/
 
     let marker = new google.maps.Marker({
       map: this.map,
@@ -65,9 +66,11 @@ export class HomePage {
     });
 
     google.maps.event.addListener(marker, 'click', () => {
-      infoWindow.open(this.map, marker);
+      this.navCtrl.push(DetailsPage, {
+        //item: new Kulturarv("Test", "Lorem ipsum det här är en lång beskrivning det här är en lång beskrivning. det här är en lång beskrivning, det här är en lång beskrivning.", "56.1807692238188,15.589905191971411", "http://www.kmart.com.au/wcsstore/Kmart/images/ncatalog/f/8/42269878-1-f.jpg")
+        item: kulturarv
+      });
+      //infoWindow.open(this.map, marker);
     });
-
-
   }
 }
