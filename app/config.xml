@@ -91,6 +91,6 @@
     <feature name="Geolocation">
         <param name="ios-package" value="CDVLocation" />
     </feature>
-    <engine name="android" spec="^5.2.2" />
     <engine name="ios" spec="4.5.0" />
+    <engine name="android" spec="~7.0.0" />
 </widget>
